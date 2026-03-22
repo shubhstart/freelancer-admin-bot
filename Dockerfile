@@ -28,5 +28,5 @@ EXPOSE 7860
 RUN touch app.log && chmod 666 app.log
 
 # Command to run with Gunicorn
-# Use $PORT provided by Hugging Face, default to 7860
-CMD gunicorn --bind 0.0.0.0:${PORT:-7860} --timeout 120 --workers 1 --preload run:app
+# Using hardcoded 7860 to match Hugging Face default app_port
+CMD ["gunicorn", "--bind", "0.0.0.0:7860", "--timeout", "120", "--workers", "1", "--log-level", "debug", "--access-logfile", "-", "--error-logfile", "-", "run:app"]

@@ -44,8 +44,13 @@ def create_app(config_class=Config):
     
     # Initialize the database
     from . import database as db_setup
-    with app.app_context():
-        db_setup.init_db()
+    try:
+        with app.app_context():
+            db_setup.init_db()
+        logger.info("Database initialized successfully.")
+    except Exception as e:
+        logger.error(f"Database initialization failed: {str(e)}")
+        # We continue to let the app try to start, though queries might fail later.
     
     # Register Blueprints
     from .routes.chat import chat_bp
