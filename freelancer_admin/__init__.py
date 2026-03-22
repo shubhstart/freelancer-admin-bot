@@ -26,6 +26,11 @@ def create_app(config_class=Config):
     # Configure security headers (relaxed for now to avoid breaking UI)
     talisman.init_app(app, content_security_policy=None, force_https=False)
     
+    # ── Health Check ──────────────────────────────────────────────────
+    @app.route("/ping")
+    def ping():
+        return jsonify({"status": "ok", "message": "Backend is alive!"})
+    
     # ── Logging Configuration ──────────────────────────────────────────
     if not app.debug:
         logging.basicConfig(
