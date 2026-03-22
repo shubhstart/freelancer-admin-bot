@@ -12,7 +12,7 @@ ENV/
 API.txt
 
 # Database
-data.db
+# data.db
 *.sqlite3
 
 # Logs
