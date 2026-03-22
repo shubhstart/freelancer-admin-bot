@@ -23,8 +23,9 @@ def create_app(config_class=Config):
     db.init_app(app)
     migrate.init_app(app, db)
     cors.init_app(app)
-    # Configure security headers (relaxed for now to avoid breaking UI)
-    talisman.init_app(app, content_security_policy=None, force_https=False)
+    # Configure security headers
+    # frame_options=False is REQUIRED for Hugging Face Spaces (embeds app in iframe)
+    talisman.init_app(app, content_security_policy=None, force_https=False, frame_options=False)
     
     # ── Health Check ──────────────────────────────────────────────────
     @app.route("/ping")
