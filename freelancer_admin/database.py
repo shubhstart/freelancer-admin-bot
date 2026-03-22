@@ -91,8 +91,64 @@ class Reminder(db.Model):
 # ── Initialization ──────────────────────────────────────────────────
 
 def init_db():
-    # In production, we'd use Flask-Migrate, but for local simple init:
+    """Create tables and seed demo data if empty."""
     db.create_all()
+    
+    # Seed demo data if table is empty
+    if Invoice.query.count() == 0:
+        _seed_demo_data()
+
+def _seed_demo_data():
+    """Insert 5 sample clients and invoices for demonstration."""
+    import logging
+    logger = logging.getLogger("freelancer-admin")
+    logger.info("Seeding demo data...")
+
+    samples = [
+        {"name": "TechCorp Solutions", "email": "billing@techcorp.com",
+         "project": "E-commerce Migration", "inv": "INV-1001",
+         "subtotal": 5000.0, "tax": 400.0, "total": 5400.0,
+         "status": "PAID", "date": "2026-03-01", "due": "2026-03-15",
+         "items": [{"desc": "Migration Service", "qty": 1, "price": 5000.0}]},
+        {"name": "Creative Agency LLC", "email": "hello@creativeagency.io",
+         "project": "Brand Identity Redesign", "inv": "INV-1002",
+         "subtotal": 2500.0, "tax": 0.0, "total": 2500.0,
+         "status": "UNPAID", "date": "2026-03-10", "due": "2026-04-10",
+         "items": [{"desc": "Logo Design", "qty": 1, "price": 1500.0}, {"desc": "Brand Guide", "qty": 1, "price": 1000.0}]},
+        {"name": "HealthFirst", "email": "apps@healthfirst.org",
+         "project": "Mobile App Consultation", "inv": "INV-1003",
+         "subtotal": 1200.0, "tax": 0.0, "total": 1200.0,
+         "status": "OVERDUE", "date": "2026-02-15", "due": "2026-03-01",
+         "items": [{"desc": "UX Workshop", "qty": 1, "price": 1200.0}]},
+        {"name": "Global Logistics", "email": "pete@globallogistics.com",
+         "project": "Dashboard Development", "inv": "INV-1004",
+         "subtotal": 4500.0, "tax": 0.0, "total": 4500.0,
+         "status": "UNPAID", "date": "2026-03-18", "due": "2026-03-25",
+         "items": [{"desc": "Core Dashboard", "qty": 1, "price": 4500.0}]},
+        {"name": "Startup Ventures", "email": "founder@startupventures.com",
+         "project": "Landing Page", "inv": "INV-1005",
+         "subtotal": 800.0, "tax": 0.0, "total": 800.0,
+         "status": "PAID", "date": "2026-01-20", "due": "2026-01-27",
+         "items": [{"desc": "Landing Page Design", "qty": 1, "price": 800.0}]},
+    ]
+
+    for s in samples:
+        c = Client(name=s["name"], email=s["email"])
+        db.session.add(c)
+        db.session.flush()
+
+        inv = Invoice(
+            invoice_number=s["inv"], client_id=c.id,
+            client_name=s["name"], client_email=s["email"],
+            project_name=s["project"], subtotal=s["subtotal"],
+            tax_amount=s["tax"], grand_total=s["total"],
+            status=s["status"], invoice_date=s["date"], due_date=s["due"]
+        )
+        inv.items = s["items"]
+        db.session.add(inv)
+
+    db.session.commit()
+    logger.info("Demo data seeded: 5 clients, 5 invoices.")
 
 # ── Client helpers ──────────────────────────────────────────────────
 
