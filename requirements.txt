@@ -1,0 +1,15 @@
+flask>=3.0.0
+flask-sqlalchemy
+flask-migrate
+openai>=1.0.0
+google-generativeai
+python-docx
+reportlab
+python-dotenv
+waitress
+gunicorn
+pydantic-settings
+pydantic
+requests
+flask-cors
+flask-talisman

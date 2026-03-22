@@ -1,0 +1,531 @@
+You are building a Python-based AI assistant application called:
+
+FREELANCER ADMIN AUTOMATION CHATBOT
+
+This system acts as a conversational administrative assistant for freelancers.
+The assistant must help freelancers manage proposals, invoices, and payment reminders
+through a single conversational chat interface.
+
+The system must eliminate repetitive non-billable administrative tasks that freelancers
+typically perform manually.
+
+---------------------------------------------------------------------
+
+PRIMARY GOAL
+
+Create a runnable application where a freelancer interacts with an AI chatbot that can:
+
+1. Generate professional client proposals from a short description
+2. Generate professional invoices from logged work
+3. Send payment reminder emails to clients using Gmail
+4. Store and retrieve client, project, proposal, invoice, and reminder data
+5. Allow the freelancer to manage invoice status (unpaid, paid, overdue)
+
+All functionality must be accessible through a single conversational interface.
+
+---------------------------------------------------------------------
+
+TECHNICAL REQUIREMENTS
+
+Language:
+Python
+
+Backend Framework:
+Flask or FastAPI recommended
+
+Frontend:
+Simple chat interface using HTML, CSS, and JavaScript
+or a minimal framework.
+
+Storage:
+SQLite database OR JSON-based storage.
+
+AI Model:
+Any LLM API (OpenAI, Gemini, Anthropic, Groq, etc.)
+
+Document Generation:
+
+Proposal Documents
+PDF or DOCX using python-docx
+
+Invoice Documents
+PDF using ReportLab
+
+Email Sending:
+Python smtplib with Gmail App Password authentication.
+
+---------------------------------------------------------------------
+
+MANDATORY INPUT FILE
+
+API.txt must exist in the project root.
+
+It contains credentials such as:
+
+OPENAI_API_KEY
+GMAIL_SENDER
+GMAIL_APP_PASS
+
+If API.txt is missing:
+Display a clear error message and stop execution.
+
+Gmail credentials must NOT be hardcoded in the source code.
+
+---------------------------------------------------------------------
+
+CHATBOT CORE FEATURES
+
+The chatbot must support the following features.
+
+FEATURE 1: PROPOSAL GENERATOR
+
+The freelancer can request a proposal by describing a project.
+
+Example:
+
+"I need a proposal for a website redesign for a company called TechNova."
+
+The chatbot must collect the following information through conversation.
+
+Required Fields
+
+Client Name
+Project Title
+Project Description
+Deliverables
+Timeline
+Freelancer Name
+
+Optional Fields
+
+Budget or Rate
+Freelancer Skills or Background
+
+If information is missing, the chatbot must ask follow-up questions.
+
+Example conversation:
+
+Freelancer:
+"I need a proposal for a branding project."
+
+Chatbot:
+"Sure. Who is the client?"
+
+Freelancer:
+"BrightLeaf"
+
+Chatbot:
+"What deliverables will you provide?"
+
+Freelancer:
+"Logo and brand guidelines"
+
+Continue until all required fields are collected.
+
+---------------------------------------------------------------------
+
+PROPOSAL STRUCTURE
+
+Generated proposals must include the following sections:
+
+1. Introduction
+A professional introduction about the freelancer.
+
+2. Project Understanding
+A summary of the client's needs.
+
+3. Proposed Approach
+How the freelancer plans to execute the work.
+
+4. Deliverables
+Clear list of project deliverables.
+
+5. Timeline
+Estimated completion time or milestones.
+
+6. Pricing
+Total cost or hourly breakdown.
+
+7. Terms
+Basic business terms such as revisions, payment schedule, ownership.
+
+8. Closing
+Professional closing inviting the client to proceed.
+
+---------------------------------------------------------------------
+
+PROPOSAL OUTPUT
+
+After generation:
+
+1. The proposal must appear as a preview in the chat interface.
+2. The freelancer must be able to edit the proposal before downloading.
+3. The proposal must be downloadable as:
+
+PDF
+DOCX
+
+4. The proposal must be stored in the system with:
+
+Client Name
+Project Title
+Proposal Text
+Date Created
+
+---------------------------------------------------------------------
+
+FEATURE 2: INVOICE GENERATOR
+
+The freelancer can generate invoices through chat.
+
+Example:
+
+"Create an invoice for 12 hours of work for TechNova at $80 per hour."
+
+The chatbot must collect the following information.
+
+Required Fields
+
+Client Name
+Project Name
+Invoice Number
+Invoice Date
+Due Date
+Work Items
+Hours per Item
+Rate
+Payment Details
+
+Optional Fields
+
+Tax or GST
+Notes
+
+---------------------------------------------------------------------
+
+INVOICE CALCULATIONS
+
+The system must automatically calculate:
+
+Subtotal per line item
+
+hours × rate
+
+Total Before Tax
+
+Tax Amount
+
+Grand Total
+
+Invoice numbers must be automatically generated sequentially.
+
+The freelancer may override the number manually if desired.
+
+---------------------------------------------------------------------
+
+INVOICE OUTPUT
+
+The invoice must be displayed as a clean formatted preview.
+
+The freelancer must be able to download the invoice as a PDF.
+
+The PDF must include:
+
+Invoice Number
+Invoice Date
+Due Date
+Client Details
+Freelancer Details
+Itemized Work Table
+Subtotal
+Tax
+Grand Total
+Payment Instructions
+
+The invoice must be saved in the system with:
+
+Invoice Number
+Client Name
+Project Name
+Invoice Amount
+Due Date
+Status
+
+Status defaults to:
+
+UNPAID
+
+---------------------------------------------------------------------
+
+FEATURE 3: PAYMENT REMINDER GENERATOR
+
+Freelancers can request payment reminders.
+
+Example prompts:
+
+"Send a reminder to TechNova for invoice #1024."
+
+"Write a follow-up for the unpaid invoice from last month."
+
+The system must detect how overdue the invoice is.
+
+Reminder tone must depend on overdue duration.
+
+---------------------------------------------------------------------
+
+REMINDER TONE RULES
+
+1 to 7 days overdue
+
+Gentle reminder
+Friendly tone assuming the client forgot.
+
+8 to 21 days overdue
+
+Firm reminder
+Professional but direct.
+
+22+ days overdue
+
+Urgent reminder
+Firm professional language with possible consequences.
+
+---------------------------------------------------------------------
+
+REMINDER STRUCTURE
+
+Subject Line
+Greeting
+Invoice Reference
+Outstanding Amount
+Original Due Date
+Days Overdue
+Request for Payment
+Payment Instructions
+Freelancer Signature
+
+---------------------------------------------------------------------
+
+EMAIL SENDING FLOW
+
+1. System generates the reminder message.
+2. Reminder draft is shown in the chat.
+3. Freelancer reviews the message.
+4. Freelancer confirms sending.
+5. System sends the email via Gmail.
+6. Reminder is logged in the database.
+
+---------------------------------------------------------------------
+
+GMAIL INTEGRATION
+
+Email sending must use Python smtplib.
+
+Authentication must use Gmail App Password.
+
+Credentials must come from environment variables.
+
+Example:
+
+GMAIL_SENDER
+GMAIL_APP_PASS
+
+Email must be sent to the client's stored email address.
+
+---------------------------------------------------------------------
+
+CLIENT AND DATA MANAGEMENT
+
+The system must store:
+
+Client Records
+Client Name
+Client Email
+Company
+Contact Details
+
+Projects
+
+Project Name
+Client Name
+Project Description
+Status
+
+Proposals
+
+Proposal Text
+Client Name
+Project Name
+Date Created
+
+Invoices
+
+Invoice Number
+Client Name
+Project Name
+Invoice Amount
+Due Date
+Status
+
+Payment Reminders
+
+Client Name
+Invoice Number
+Date Sent
+Reminder Message
+
+---------------------------------------------------------------------
+
+CHAT INTERFACE REQUIREMENTS
+
+The application must provide a single chat interface.
+
+The freelancer must NOT navigate to separate pages.
+
+The chatbot must detect intent automatically.
+
+Examples:
+
+"I need a proposal"
+→ Proposal Generator
+
+"Create an invoice"
+→ Invoice Generator
+
+"Send reminder"
+→ Payment Reminder
+
+"What invoices are unpaid?"
+→ Invoice Query
+
+---------------------------------------------------------------------
+
+CHATBOT BEHAVIOR
+
+If information is missing, ask follow-up questions.
+
+Example:
+
+Freelancer:
+"I need a proposal."
+
+Chatbot:
+"Sure. What is the client's name?"
+
+Freelancer:
+"BrightLeaf"
+
+Chatbot:
+"What deliverables will you provide?"
+
+Continue until all required data is collected.
+
+---------------------------------------------------------------------
+
+INTENT DETECTION
+
+Intent detection can be implemented using:
+
+Keyword detection
+
+or
+
+LLM classification.
+
+Possible intents include:
+
+Proposal Generation
+Invoice Generation
+Payment Reminder
+Invoice Status Query
+Client History Query
+
+---------------------------------------------------------------------
+
+DATA PERSISTENCE
+
+All data must persist between sessions.
+
+Use:
+
+SQLite
+
+or
+
+JSON files.
+
+Clients should be the top-level entity.
+
+Each client can contain:
+
+Projects
+Proposals
+Invoices
+Reminders
+
+---------------------------------------------------------------------
+
+USER EXPERIENCE REQUIREMENTS
+
+The chat interface must include:
+
+Conversation thread
+Typing indicator
+Download buttons for documents
+Send Email button for reminders
+Edit option for generated content
+
+The interface should be clean and distraction-free.
+
+---------------------------------------------------------------------
+
+SECURITY REQUIREMENTS
+
+Never hardcode credentials.
+
+Never expose Gmail password in logs.
+
+Validate all user inputs.
+
+Require confirmation before sending emails.
+
+---------------------------------------------------------------------
+
+FINAL OUTPUT REQUIREMENTS
+
+The completed system must include:
+
+Working chat interface
+Proposal generation capability
+Invoice generation capability
+Payment reminder generation
+Gmail email sending
+Client and invoice data storage
+Invoice status tracking
+PDF and DOCX document generation
+
+---------------------------------------------------------------------
+
+ACCEPTANCE CRITERIA
+
+The system is considered complete when:
+
+The chatbot generates professional proposals.
+
+The chatbot generates accurate invoices.
+
+Invoices calculate totals automatically.
+
+Reminder tone changes based on overdue duration.
+
+Reminder emails are successfully sent via Gmail.
+
+All records are stored and retrievable.
+
+Documents can be downloaded.
+
+All functionality works through a conversational interface.
+
+---------------------------------------------------------------------
+
+END OF INSTRUCTIONS
