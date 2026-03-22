@@ -118,9 +118,9 @@ def _handle_query(msg: str, lang: str = "English") -> str:
              "|---|--------|---------|-------:|-----|--------|"]
     for inv in invs:
         lines.append(
-            f"| {inv['invoice_number']} | {inv['client_name']} | "
-            f"{inv['project_name']} | ${inv['grand_total']:.2f} | "
-            f"{inv['due_date']} | {inv['status']} |"
+            f"| {inv.invoice_number} | {inv.client_name} | "
+            f"{inv.project_name} | ${inv.grand_total:.2f} | "
+            f"{inv.due_date} | {inv.status} |"
         )
     return "\n".join(lines)
 

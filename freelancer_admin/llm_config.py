@@ -3,8 +3,10 @@ from openai import OpenAI
 from dotenv import load_dotenv
 
 # Load .env file automatically
-root = os.path.dirname(os.path.abspath(__file__))
-load_dotenv(os.path.join(root, ".env"))
+# root is freelancer_admin/, .env is in parent/
+pkg_dir = os.path.dirname(os.path.abspath(__file__))
+r_dir = os.path.dirname(pkg_dir)
+load_dotenv(os.path.join(r_dir, ".env"))
 
 def get_llm_config():
     """Returns (client, model_name).
