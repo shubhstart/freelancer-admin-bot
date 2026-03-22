@@ -29,27 +29,38 @@ def api_proposals():
 
 @api_bp.route("/invoices")
 def api_invoices():
-    invs = Invoice.query.all()
-    today = dt.now().strftime("%Y-%m-%d")
-    data = []
-    for inv in invs:
-        # Auto-detect overdue
-        if (inv.status or "").upper() == "UNPAID" and (inv.due_date or "") < today:
-            inv.status = "OVERDUE"
-            db.session.commit()
+    try:
+        invs = Invoice.query.all()
+        today = dt.now().strftime("%Y-%m-%d")
+        data = []
+        needs_commit = False
         
-        data.append({
-            "id": inv.id,
-            "invoice_number": inv.invoice_number,
-            "client_name": inv.client_name,
-            "client_email": inv.client_email,
-            "project_name": inv.project_name,
-            "grand_total": inv.grand_total,
-            "due_date": inv.due_date,
-            "status": inv.status,
-            "file_path_pdf": inv.file_path_pdf
-        })
-    return jsonify(data)
+        for inv in invs:
+            # Auto-detect overdue
+            if (inv.status or "").upper() == "UNPAID" and (inv.due_date or "") < today:
+                inv.status = "OVERDUE"
+                needs_commit = True
+            
+            data.append({
+                "id": inv.id,
+                "invoice_number": str(inv.invoice_number or "N/A"),
+                "client_name": str(inv.client_name or "N/A"),
+                "client_email": str(inv.client_email or "N/A"),
+                "project_name": str(inv.project_name or "N/A"),
+                "grand_total": float(inv.grand_total or 0.0), # CRITICAL: Ensure serializable
+                "due_date": str(inv.due_date or "N/A"),
+                "status": str(inv.status or "UNPAID"),
+                "file_path_pdf": str(inv.file_path_pdf or "")
+            })
+        
+        if needs_commit:
+            db.session.commit()
+            
+        return jsonify(data)
+    except Exception as e:
+        logger.error(f"API Invoices failure: {str(e)}")
+        # Fallback to an empty list to prevent frontend crash
+        return jsonify([])
 
 
 @api_bp.route("/invoice/<int:iid>/mark-paid", methods=["POST"])
