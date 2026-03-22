@@ -32,15 +32,6 @@ def create_app(config_class=Config):
     def ping():
         return jsonify({"status": "ok", "message": "Backend is alive!"})
     
-    # ── Logs (Debug) ──────────────────────────────────────────────────
-    @app.route("/logs")
-    def logs():
-        try:
-            with open("app.log", "r") as f:
-                lines = f.readlines()[-100:]
-            return "<pre>" + "".join(lines) + "</pre>"
-        except Exception as e:
-            return str(e)
     # ── Logging Configuration ──────────────────────────────────────────
     if not app.debug:
         logging.basicConfig(
