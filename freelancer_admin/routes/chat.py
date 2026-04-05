@@ -19,6 +19,14 @@ def _session(sid: str) -> dict:
 def index():
     return render_template("index.html")
 
+@chat_bp.route("/api/reset", methods=["POST"])
+def reset_session():
+    data = request.get_json(force=True)
+    sid = data.get("session_id", "default")
+    if sid in sessions:
+        del sessions[sid]
+    return jsonify({"ok": True, "message": "Session reset."})
+
 @chat_bp.route("/api/chat", methods=["POST"])
 def chat():
     # Initialize the LLM client once for the request

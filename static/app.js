@@ -4,7 +4,7 @@ const chatArea = document.getElementById("chat-area");
 const input    = document.getElementById("msg-input");
 const sendBtn  = document.getElementById("send-btn");
 
-const SESSION_ID = crypto.randomUUID();
+let SESSION_ID = crypto.randomUUID();
 
 // ── Helpers ──────────────────────────────────────────────────────────
 
@@ -232,6 +232,35 @@ input.addEventListener("keydown", (e) => {
 
 // Welcome message
 addMessage("bot", UI_TEXT.English.welcome);
+
+// ── Reset Conversation ──────────────────────────────────────────────
+
+document.getElementById("reset-btn").addEventListener("click", async () => {
+  // Notify backend to clear session
+  try {
+    await fetch("/api/reset", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ session_id: SESSION_ID }),
+    });
+  } catch (e) {
+    // Continue with client-side reset even if backend fails
+  }
+
+  // Generate a new session ID
+  SESSION_ID = crypto.randomUUID();
+
+  // Clear chat and re-show welcome message
+  chatArea.innerHTML = "";
+  const lang = document.getElementById("lang-select").value;
+  const t = UI_TEXT[lang] || UI_TEXT.English;
+  addMessage("bot", t.welcome);
+
+  input.value = "";
+  input.disabled = false;
+  sendBtn.disabled = false;
+  input.focus();
+});
 
 
 // ── Sidebar Navigation ──────────────────────────────────────────────

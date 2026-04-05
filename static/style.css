@@ -198,6 +198,34 @@ header .title-group h1 {
 
 .header-actions {
   margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+#reset-btn {
+  padding: 8px 16px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  color: var(--text-primary);
+  font-family: 'Inter', sans-serif;
+  font-size: 0.82rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: var(--transition);
+  white-space: nowrap;
+}
+
+#reset-btn:hover {
+  background: linear-gradient(135deg, #8B5CF6, #F472B6);
+  border-color: var(--accent);
+  box-shadow: 0 0 16px var(--accent-glow);
+  transform: scale(1.04);
+}
+
+#reset-btn:active {
+  transform: scale(0.96);
 }
 
 #lang-select {
