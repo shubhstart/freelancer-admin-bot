@@ -244,22 +244,11 @@ document.getElementById("reset-btn").addEventListener("click", async () => {
       body: JSON.stringify({ session_id: SESSION_ID }),
     });
   } catch (e) {
-    // Continue with client-side reset even if backend fails
+    // Continue with page reload even if backend fails
   }
 
-  // Generate a new session ID
-  SESSION_ID = crypto.randomUUID();
-
-  // Clear chat and re-show welcome message
-  chatArea.innerHTML = "";
-  const lang = document.getElementById("lang-select").value;
-  const t = UI_TEXT[lang] || UI_TEXT.English;
-  addMessage("bot", t.welcome);
-
-  input.value = "";
-  input.disabled = false;
-  sendBtn.disabled = false;
-  input.focus();
+  // Completely refresh the chat window page
+  window.location.reload();
 });
 
 
